@@ -39,6 +39,18 @@ sys.path.append(os.path.join(BPDIR, 'lib'))
 
 from build_pack_utils import utils
 
+def get_index_path():
+    for idx, arg in enumerate(sys.argv):
+        if arg == '--index':
+            return sys.argv[idx + 1]
+        
+
+def get_stack():
+    if 'lucid' in get_index_path():
+        return 'lucid'
+    elif 'trusty' in get_index_path():
+        return 'trusty'
+
 
 def load_cfg():
     """Load's the build pack's default options.json file"""
@@ -321,11 +333,13 @@ def zip_up_files(binPath, zipPath, indexPath):
         zipName = 'php_buildpack-offline-v%s.zip' % \
             versionFile.read().rstrip()
     try:
+        currentStack = get_stack()
+
         zf = zipfile.ZipFile(os.path.join(zipPath, zipName), 'w')
         # zip up binaries
-        zip_up_folder(zf, binPath, altBase='binaries')
+        zip_up_folder(zf, binPath, altBase=os.path.join('binaries', currentStack))
         # zip up index
-        zf.write(indexPath, os.path.join('binaries', 'index-all.json'))
+        zf.write(indexPath, os.path.join('binaries', currentStack, 'index-all.json'))
         # zip uo VERSION
         zf.write('VERSION')
         # zip up build pack
@@ -341,8 +355,8 @@ def zip_up_files(binPath, zipPath, indexPath):
                       zipfile.ZIP_DEFLATED)
         # overwrite DOWNLOAD_URL in options.json
         cfg = load_cfg()
-        cfg['DOWNLOAD_URL'] = 'file://{BP_DIR}/binaries'
-        cfg['STACK'] = ''
+        cfg['DOWNLOAD_URL'] = 'file://{BP_DIR}/binaries/{STACK}'
+        # cfg['STACK'] = ''
         info = zipfile.ZipInfo('defaults/options.json')
         info.date_time = datetime.now().timetuple()[:6]
         info.compress_type = zipfile.ZIP_DEFLATED
