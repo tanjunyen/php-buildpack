@@ -10,23 +10,6 @@ from common.components import DownloadAssertHelper
 from common.base import BaseCompileApp
 
 
-class TestCompileWithStack(BaseCompileApp):
-    def __init__(self):
-        self.app_name = 'app-1'
-
-    def testStackSwitchingOccursWithLucid(self):
-        output = ErrorHelper().compile(self.bp)
-        print self.opts
-        # print output
-        assert 'lucid' in output
-
-    def testStackSwitchingOccursWithTrusty(self):
-        output = ErrorHelper().compile(self.bp)
-        print self.opts
-        # print output
-        assert 'trusty' in output
-
-
 class TestCompileApp1(BaseCompileApp):
     def __init__(self):
         self.app_name = 'app-1'

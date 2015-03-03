@@ -10,11 +10,7 @@ if [ $# -eq 0 ] || ([ $mode != "online" ] && [ $mode != "offline" ]); then
 fi
 
 if [ "$mode" == "offline" ]; then
-  if [ "$stack" == "lucid" ]; then
-    ./bin/binaries zip --index binaries/lucid/index-all.json --cache
-  elif [ "$stack" == "trusty" ]; then
-    ./bin/binaries zip --index binaries/trusty/index-all.json --cache
-  fi
+    ./bin/binaries zip --index binaries/trusty/index-all.json,binaries/lucid/index-all.json --cache
   exit 0
 else
   zip -r php_buildpack-v`cat VERSION`.zip \
